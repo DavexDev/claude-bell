@@ -1,6 +1,18 @@
-# 🔔 claude-bell
+<p align="center">
+  <img src="https://raw.githubusercontent.com/DavexDev/claude-bell/main/assets/logo.png" alt="claude-bell logo" width="110">
+</p>
 
-Sound notifications for [Claude Code](https://claude.com/claude-code). Hear a sound the moment Claude needs you — no more staring at the terminal.
+<h1 align="center">claude-bell</h1>
+
+<p align="center">
+  Sound notifications for <a href="https://claude.com/claude-code">Claude Code</a> — hear a sound the moment Claude needs you, no more staring at the terminal.
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/@davexdev/claude-bell"><img src="https://img.shields.io/npm/v/@davexdev/claude-bell?color=8b5cf6" alt="npm version"></a>
+  <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-8b5cf6" alt="platforms">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-8b5cf6" alt="license MIT"></a>
+</p>
 
 | Sound | Plays when |
 |-------|------------|
