@@ -1,0 +1,5 @@
+# Normalize line endings to LF for all text files.
+* text=auto eol=lf
+
+# Treat audio files as binary.
+*.wav binary

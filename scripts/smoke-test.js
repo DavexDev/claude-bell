@@ -1,0 +1,58 @@
+#!/usr/bin/env node
+// Lightweight smoke tests — no audio playback, no settings mutation.
+// Verifies config resolution and event-key mapping. Run: npm test
+
+import assert from 'node:assert';
+import { existsSync } from 'node:fs';
+import { loadConfig, resolveSoundForEvent, resolveSoundPath } from '../src/config.js';
+
+let passed = 0;
+function check(name, fn) {
+  fn();
+  passed += 1;
+  console.log(`  ok  ${name}`);
+}
+
+const config = loadConfig();
+
+check('config is enabled by default', () => {
+  assert.strictEqual(config.enabled, true);
+});
+
+check('all bundled sound files exist', () => {
+  for (const name of Object.keys(config.sounds)) {
+    const file = resolveSoundPath(config, name);
+    assert.ok(file && existsSync(file), `missing sound: ${name}`);
+  }
+});
+
+check('Stop maps to the complete sound', () => {
+  const file = resolveSoundForEvent(config, 'Stop');
+  assert.ok(file && file.endsWith('complete.wav'));
+});
+
+check('Notification.permission_prompt maps to waiting', () => {
+  const file = resolveSoundForEvent(config, 'Notification.permission_prompt');
+  assert.ok(file && file.endsWith('waiting.wav'));
+});
+
+check('Notification.idle_prompt maps to idle', () => {
+  const file = resolveSoundForEvent(config, 'Notification.idle_prompt');
+  assert.ok(file && file.endsWith('idle.wav'));
+});
+
+check('SubagentStop maps to subagent', () => {
+  const file = resolveSoundForEvent(config, 'SubagentStop');
+  assert.ok(file && file.endsWith('subagent.wav'));
+});
+
+check('unmapped event resolves to null', () => {
+  assert.strictEqual(resolveSoundForEvent(config, 'PreToolUse'), null);
+});
+
+check('disabled config mutes everything', () => {
+  const muted = { ...config, enabled: false };
+  assert.strictEqual(resolveSoundForEvent(muted, 'Stop'), null);
+});
+
+console.log(`\n${passed} checks passed.`);

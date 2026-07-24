@@ -1,0 +1,48 @@
+{
+  "name": "claude-bell",
+  "version": "0.1.0",
+  "description": "Sound notifications for Claude Code — play a sound when a task finishes, when Claude is waiting for approval, or when a subagent completes.",
+  "type": "module",
+  "bin": {
+    "claude-bell": "bin/cli.js"
+  },
+  "exports": {
+    ".": "./src/play.js"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "sounds/",
+    "config.default.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "gen-sounds": "node scripts/gen-sounds.js",
+    "test": "node scripts/smoke-test.js"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "notifications",
+    "sound",
+    "hooks",
+    "cli",
+    "bell",
+    "notify"
+  ],
+  "author": "DavexDev",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DavexDev/claude-bell.git"
+  },
+  "homepage": "https://github.com/DavexDev/claude-bell#readme",
+  "bugs": {
+    "url": "https://github.com/DavexDev/claude-bell/issues"
+  },
+  "dependencies": {}
+}
