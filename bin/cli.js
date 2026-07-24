@@ -16,6 +16,7 @@ const command = argv[0];
 const flags = new Set(argv.filter((a) => a.startsWith('--')));
 const positionals = argv.slice(1).filter((a) => !a.startsWith('--'));
 const project = flags.has('--project');
+const errors = flags.has('--errors');
 
 function pkgVersion() {
   try {
@@ -28,23 +29,29 @@ function pkgVersion() {
 const HELP = `claude-bell — sound notifications for Claude Code
 
 Usage:
-  claude-bell install [--project]    Register hooks in settings.json (global by default)
-  claude-bell uninstall [--project]  Remove claude-bell's hooks
-  claude-bell test [sound]           Play a sound to check audio (default: complete)
-  claude-bell config                 Create/print the user config file
-  claude-bell help                   Show this help
-  claude-bell version                Show the version
+  claude-bell install [--project] [--errors]   Register hooks in settings.json (global by default)
+  claude-bell uninstall [--project]            Remove claude-bell's hooks
+  claude-bell test [sound]                      Play a sound to check audio (default: complete)
+  claude-bell config                            Create/print the user config file
+  claude-bell help                              Show this help
+  claude-bell version                           Show the version
 
-Sounds: complete, waiting, idle, subagent (or any key in your config's "sounds").
+Flags:
+  --project   Write to ./.claude/settings.json instead of the global ~/.claude one.
+  --errors    Also play a sound when a Bash command fails (PostToolUseFailure).
+              Off by default because tool failures can be frequent/noisy.
+
+Sounds: complete, waiting, idle, subagent, error (or any key in your config's "sounds").
 
 Config: ${userConfigPath}
   Point "sounds" entries at your own .wav files, remap "events", or set
   "enabled": false to mute everything. See config.default.json for the shape.`;
 
 function doInstall() {
-  const res = install({ project });
+  const res = install({ project, errors });
   console.log(`✔ Installed claude-bell hooks into:\n  ${res.path}`);
   console.log(`  Events: ${res.events.join(', ')}`);
+  if (errors) console.log('  Error sound enabled for failed Bash commands.');
   if (res.backup) console.log(`  Backup saved: ${res.backup}`);
   console.log('\nRestart or start a new Claude Code session to load the hooks.');
 }

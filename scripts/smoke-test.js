@@ -46,6 +46,11 @@ check('SubagentStop maps to subagent', () => {
   assert.ok(file && file.endsWith('subagent.wav'));
 });
 
+check('PostToolUseFailure maps to the error sound', () => {
+  const file = resolveSoundForEvent(config, 'PostToolUseFailure');
+  assert.ok(file && file.endsWith('error.wav'));
+});
+
 check('unmapped event resolves to null', () => {
   assert.strictEqual(resolveSoundForEvent(config, 'PreToolUse'), null);
 });

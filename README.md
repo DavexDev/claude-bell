@@ -6,6 +6,7 @@ Sound notifications for [Claude Code](https://claude.com/claude-code). Play a so
 - ⏳ Claude is **waiting for your approval** to run a tool
 - 💤 Claude is **idle**, waiting for your next prompt
 - 🤖 a **subagent finishes**
+- ❌ a **terminal command fails** (optional, opt-in)
 
 No more staring at the terminal waiting for Claude to need you. It works by
 registering [Claude Code hooks](https://code.claude.com/docs/en/hooks-guide)
@@ -43,7 +44,22 @@ claude-bell test            # plays the "task complete" sound
 claude-bell test waiting    # plays the "waiting for approval" sound
 claude-bell test idle
 claude-bell test subagent
+claude-bell test error
 ```
+
+## Error sounds (optional)
+
+By default there's no sound for failures, because tool failures are frequent
+(a `grep` with no matches, a failing test — all exit non-zero). If you want an
+audible cue when a **terminal command fails**, install with `--errors`:
+
+```bash
+claude-bell install --errors
+```
+
+This adds a `PostToolUseFailure` hook scoped to **Bash** commands, mapped to the
+`error` sound. Remove it by running `claude-bell uninstall` and `install` again
+without the flag.
 
 ## Uninstall
 
@@ -74,14 +90,16 @@ This creates `~/.claude/claude-bell.config.json` from the defaults:
     "complete": "complete.wav",
     "waiting": "waiting.wav",
     "idle": "idle.wav",
-    "subagent": "subagent.wav"
+    "subagent": "subagent.wav",
+    "error": "error.wav"
   },
   "events": {
     "Stop": "complete",
     "Notification.permission_prompt": "waiting",
     "Notification.idle_prompt": "idle",
     "Notification.agent_completed": "complete",
-    "SubagentStop": "subagent"
+    "SubagentStop": "subagent",
+    "PostToolUseFailure": "error"
   }
 }
 ```
@@ -104,6 +122,7 @@ want to change.
 | `Notification.idle_prompt` | Claude is idle, waiting for your next prompt |
 | `Notification.agent_completed` | A background session finished or failed |
 | `SubagentStop` | A subagent (Task) finished |
+| `PostToolUseFailure` | A tool failed — only installed via `install --errors` (Bash-scoped) |
 
 `play.js` reads the hook's `notification_type` from stdin to pick the right key,
 falling back to a bare `Notification` key if you define one.

@@ -17,12 +17,20 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const PLAY_JS = join(__dirname, 'play.js').replace(/\\/g, '/');
 const NODE = process.execPath.replace(/\\/g, '/');
 
-/** The hook events we register and the matcher to use for each. */
+/** The hook events we register by default and the matcher to use for each. */
 const HOOK_EVENTS = [
   { event: 'Stop', matcher: '' },
   { event: 'Notification', matcher: '' },
   { event: 'SubagentStop', matcher: '' },
 ];
+
+/**
+ * Opt-in error hook: fires when a Bash command fails (non-zero exit). Only
+ * registered when `install({ errors: true })` is requested, because tool
+ * failures are frequent (a grep with no matches, a failing test) and would
+ * otherwise be noisy.
+ */
+const ERROR_HOOK_EVENT = { event: 'PostToolUseFailure', matcher: 'Bash' };
 
 /** Resolve the target settings.json path for the requested scope. */
 export function settingsPathFor({ project = false } = {}) {
@@ -70,14 +78,15 @@ function writeSettings(path, settings) {
  * blocks and leaves everything else untouched.
  * @returns {{ path: string, backup: string|null, events: string[] }}
  */
-export function install({ project = false } = {}) {
+export function install({ project = false, errors = false } = {}) {
   const path = settingsPathFor({ project });
   const settings = readSettings(path);
   const backupPath = backup(path);
 
   if (!settings.hooks || typeof settings.hooks !== 'object') settings.hooks = {};
 
-  for (const { event, matcher } of HOOK_EVENTS) {
+  const events = errors ? [...HOOK_EVENTS, ERROR_HOOK_EVENT] : HOOK_EVENTS;
+  for (const { event, matcher } of events) {
     const existing = Array.isArray(settings.hooks[event]) ? settings.hooks[event] : [];
     const others = existing.filter((block) => !isOurBlock(block));
     others.push({
@@ -88,7 +97,7 @@ export function install({ project = false } = {}) {
   }
 
   writeSettings(path, settings);
-  return { path, backup: backupPath, events: HOOK_EVENTS.map((h) => h.event) };
+  return { path, backup: backupPath, events: events.map((h) => h.event) };
 }
 
 /**

@@ -16,6 +16,7 @@ const SAMPLE_RATE = 44100;
 
 /** Musical note frequencies (Hz). */
 const N = {
+  E3: 164.81, A3: 220.0, C4: 261.63,
   A4: 440.0, C5: 523.25, D5: 587.33, E5: 659.25,
   G5: 783.99, A5: 880.0, C6: 1046.5,
 };
@@ -90,6 +91,11 @@ const SOUNDS = {
   // Subagent finished: quick high blip.
   subagent: [
     { freq: N.C6, dur: 0.09, gain: 0.45 },
+  ],
+  // Error / command failed: low descending two-tone ("uh-oh").
+  error: [
+    { freq: N.A3, dur: 0.16, gain: 0.55 },
+    { freq: N.E3, dur: 0.26, gain: 0.55 },
   ],
 };
 

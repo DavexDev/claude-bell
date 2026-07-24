@@ -4,13 +4,15 @@
     "complete": "complete.wav",
     "waiting": "waiting.wav",
     "idle": "idle.wav",
-    "subagent": "subagent.wav"
+    "subagent": "subagent.wav",
+    "error": "error.wav"
   },
   "events": {
     "Stop": "complete",
     "Notification.permission_prompt": "waiting",
     "Notification.idle_prompt": "idle",
     "Notification.agent_completed": "complete",
-    "SubagentStop": "subagent"
+    "SubagentStop": "subagent",
+    "PostToolUseFailure": "error"
   }
 }
