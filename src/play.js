@@ -10,8 +10,24 @@
 // Contract: this must NEVER break Claude Code. Any error is swallowed and the
 // process exits 0.
 
+import { appendFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { homedir } from 'node:os';
 import { loadConfig, resolveSoundForEvent } from './config.js';
 import { playSound } from './player.js';
+
+const LOG_PATH = join(homedir(), '.claude', 'claude-bell.log');
+
+/**
+ * Append a diagnostic line to ~/.claude/claude-bell.log when logging is on
+ * (config.debug or the CLAUDE_BELL_DEBUG env var). Best-effort, never throws.
+ */
+function log(config, line) {
+  if (!config?.debug && !process.env.CLAUDE_BELL_DEBUG) return;
+  try {
+    appendFileSync(LOG_PATH, `${new Date().toISOString()} ${line}\n`);
+  } catch { /* ignore logging failures */ }
+}
 
 /** Read all of stdin (the hook JSON) with a hard timeout, tolerant of no input. */
 function readStdin(timeoutMs = 500) {
@@ -64,7 +80,10 @@ async function main() {
     resolveSoundForEvent(config, eventKey) ??
     (eventKey !== eventName ? resolveSoundForEvent(config, eventName) : null);
 
-  if (file) await playSound(file);
+  // Play synchronously (wait for the player to finish) so Claude Code's hook
+  // runner doesn't reap the audio process before the sound is heard.
+  const played = file ? await playSound(file, { wait: true }) : false;
+  log(config, `event=${eventKey} file=${file ?? 'none'} played=${played}`);
 }
 
 main()

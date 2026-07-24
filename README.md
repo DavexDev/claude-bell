@@ -19,10 +19,10 @@ Cross-platform: **Windows, macOS, Linux**.
 
 ```bash
 # Try it without installing:
-npx claude-bell install
+npx @davexdev/claude-bell install
 
 # Or install globally:
-npm install -g claude-bell
+npm install -g @davexdev/claude-bell
 claude-bell install
 ```
 
@@ -134,8 +134,20 @@ player:
 - **macOS** — `afplay`
 - **Linux** — the first available of `paplay`, `aplay`, `ffplay`, `play`
 
-Playback is fire-and-forget and errors are swallowed, so the notifier can never
-break or slow down Claude Code.
+Playback runs synchronously (the hook waits the ~0.5–1s it takes to play the
+short sound) so Claude Code's hook runner doesn't reap the audio process early.
+Any error is swallowed and the process exits 0, so the notifier can never break
+Claude Code.
+
+### Debugging
+
+Set `"debug": true` in your config (or the `CLAUDE_BELL_DEBUG` env var) to append
+a line to `~/.claude/claude-bell.log` on every event — handy to confirm a hook is
+firing and which sound it resolved:
+
+```
+2026-01-01T00:00:00.000Z event=Stop file=.../complete.wav played=true
+```
 
 ## Limitations
 
