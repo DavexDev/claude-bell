@@ -1,6 +1,6 @@
 {
   "name": "@davexdev/claude-bell",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "Sound notifications for Claude Code — play a sound when a task finishes, when Claude is waiting for approval, or when a subagent completes.",
   "type": "module",
   "bin": {
