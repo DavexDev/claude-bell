@@ -4,7 +4,9 @@
 
 import assert from 'node:assert';
 import { existsSync } from 'node:fs';
-import { loadConfig, resolveSoundForEvent, resolveSoundPath } from '../src/config.js';
+import {
+  loadConfig, resolveSoundForEvent, resolveSoundPath, themes,
+} from '../src/config.js';
 
 let passed = 0;
 function check(name, fn) {
@@ -23,6 +25,16 @@ check('all bundled sound files exist', () => {
   for (const name of Object.keys(config.sounds)) {
     const file = resolveSoundPath(config, name);
     assert.ok(file && existsSync(file), `missing sound: ${name}`);
+  }
+});
+
+check('all sound files exist for every bundled theme', () => {
+  for (const theme of themes) {
+    const themedConfig = { ...config, theme };
+    for (const name of Object.keys(config.sounds)) {
+      const file = resolveSoundPath(themedConfig, name);
+      assert.ok(file && existsSync(file), `missing sound: ${theme}/${name}`);
+    }
   }
 });
 

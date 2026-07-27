@@ -22,7 +22,7 @@ export const bundledSoundsDir = join(packageRoot, 'sounds');
 export const defaultTheme = 'mac';
 
 /** Names of the bundled sound themes (subfolders of sounds/). */
-export const themes = ['mac', 'retro'];
+export const themes = ['mac', 'retro', 'glass', 'arcade', 'marimba', 'hud'];
 
 /** Path to the user's optional config override. */
 export const userConfigPath = join(homedir(), '.claude', 'claude-bell.config.json');

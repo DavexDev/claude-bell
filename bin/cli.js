@@ -38,7 +38,7 @@ Usage:
   claude-bell install [--project] [--errors]   Register hooks in settings.json (global by default)
   claude-bell uninstall [--project]            Remove claude-bell's hooks
   claude-bell test [sound] [--theme=name]       Play a sound to check audio (default: complete)
-  claude-bell theme [name]                      Show/switch the sound theme (mac, retro)
+  claude-bell theme [name]                      Show/switch the sound theme
   claude-bell config                            Create/print the user config file
   claude-bell help                              Show this help
   claude-bell version                           Show the version
