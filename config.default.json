@@ -1,5 +1,6 @@
 {
   "enabled": true,
+  "theme": "mac",
   "sounds": {
     "complete": "complete.wav",
     "waiting": "waiting.wav",

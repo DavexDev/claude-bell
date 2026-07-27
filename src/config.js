@@ -15,8 +15,14 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 /** Absolute path to the installed package root (parent of src/). */
 export const packageRoot = join(__dirname, '..');
 
-/** Directory holding the bundled .wav files. */
+/** Directory holding the bundled .wav files (one subfolder per theme). */
 export const bundledSoundsDir = join(packageRoot, 'sounds');
+
+/** Theme to fall back to when the config doesn't set one. */
+export const defaultTheme = 'mac';
+
+/** Names of the bundled sound themes (subfolders of sounds/). */
+export const themes = ['mac', 'retro'];
 
 /** Path to the user's optional config override. */
 export const userConfigPath = join(homedir(), '.claude', 'claude-bell.config.json');
@@ -64,14 +70,22 @@ export function loadConfig() {
 
 /**
  * Resolve a sound *name* (a key in config.sounds) to an absolute file path.
- * Values may be bare filenames (looked up in the bundled sounds dir) or
- * absolute paths to the user's own audio files. Returns null if unresolved.
+ * Values may be bare filenames (looked up in the current theme's folder
+ * inside the bundled sounds dir) or absolute paths to the user's own audio
+ * files. Returns null if unresolved.
  */
 export function resolveSoundPath(config, soundName) {
   const value = config?.sounds?.[soundName];
   if (!value || typeof value !== 'string') return null;
-  const path = isAbsolute(value) ? value : join(bundledSoundsDir, value);
-  return existsSync(path) ? path : null;
+  if (isAbsolute(value)) return existsSync(value) ? value : null;
+
+  const theme = typeof config?.theme === 'string' ? config.theme : defaultTheme;
+  const themed = join(bundledSoundsDir, theme, value);
+  if (existsSync(themed)) return themed;
+
+  // Fall back to the theme-less flat layout (older bundles / custom setups).
+  const flat = join(bundledSoundsDir, value);
+  return existsSync(flat) ? flat : null;
 }
 
 /**
